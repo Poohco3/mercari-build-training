@@ -1,8 +1,14 @@
-FROM alpine
+FROM golang:1.21-alpine 
 
 RUN addgroup -S mercari && adduser -S trainee -G mercari
 # RUN chown -R trainee:mercari /path/to/db
 
+WORKDIR /app
+
+COPY . /app/
+RUN mv db /db && chown -R trainee:mercari /app
+
 USER trainee
 
-CMD ["go", "version"]
+RUN go mod tidy
+CMD go run app/main.go
